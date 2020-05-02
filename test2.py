@@ -21,11 +21,10 @@ ploxie_slova = []
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
-@Bot.event
-async def on_message(msg):
-    if msg.content == "qwe":
-        await Message.delete()
-
+@Bot.command()
+@commands.has_any_role("kicker" )
+async def clear(ctx, amount = 10):
+	await.ctx.channel.purge(limit=amount)
 
 #kick
 @Bot.command( pass_context = True )
