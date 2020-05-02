@@ -51,3 +51,4 @@ async def banan(ctx, member: discord.Member, *, reason = None):
     await member.ban(reason = reason)
 
 token = os.environ.get('BOT_TOKEN')
+Bot.run(str(token))
