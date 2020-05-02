@@ -27,26 +27,10 @@ async def on_message(msg):
         await msg.delete()
 
 
-#kick
-@Bot.command( pass_context = True )
-@commands.has_any_role("kicker" )
-async def  kick(ctx, member: discord.Member, *, reason = None):
-	await ctx.channel.purge(limit = 1)#СТИРАЕМ СООБЩЕНИЕ С КОММАНДОЙ .kcik
-
-	await member.kick(reason = reason)
-	await ctx.send(f"юзер {member.mention} кикнут за плохое поведение")
-
-#ban
-@Bot.command( pass_context = True)
-@commands.has_any_role("kicker" )
-async def banan(ctx, member: discord.Member, *, reason = None):
-    emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
-    await ctx.channel.purge(limit = 1)#удаляем сообщение с этой командой из чата
-
-    emb.set_author(name = member.name, icon_url = member.avatar_url)#Показываем имя и аватар забаненого пользователя
-    emb.add_field(name = 'Ban user', value = 'Юзер {}'.format(member) + ' забанен по причине "{}" '.format(reason))
-    emb.set_footer(text ="Был забанен администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
-
+@Bot.command()
+async def kick(ctx, member: discord.Member, *, reason =None):
+  await member.kick(reason = reason)
+  await ctx.send(f"юзер {member.mention} кикнут за плохое поведение")
     await ctx.send(embed = emb)
     await member.ban(reason = reason)
 
