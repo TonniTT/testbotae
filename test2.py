@@ -22,8 +22,8 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
 @Bot.command( pass_context = True )
-async def clear(ctx, amount=5):
-	await.ctx.channel.purge(limit=amount)
+async def clear(ctx,):
+	await.ctx.channel.purge(limit=5)
 
 #kick
 @Bot.command( pass_context = True )
