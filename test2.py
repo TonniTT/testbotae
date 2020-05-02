@@ -24,7 +24,7 @@ async def on_ready():
 @Bot.event
 async def on_message(msg):
     if msg.content == "qwe":
-        await msg.delete()
+        await Message.delete()
 
 
 #kick
