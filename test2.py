@@ -21,9 +21,7 @@ ploxie_slova = []
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
-@Bot.command()
-async def clears(ctx, amount=5):
-	await.ctx.channel.purge(limit=amount)
+
 
 #kick
 @Bot.command( pass_context = True )
