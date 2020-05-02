@@ -21,10 +21,10 @@ ploxie_slova = []
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
-#@Bot.event
-#async def on_message(msg):
-    #if msg.content == "qwe":
-        #await msg.delete()
+@Bot.event
+async def on_message(msg):
+    if msg.content == "qwe":
+        await msg.delete()
 
 
 #kick
