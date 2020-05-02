@@ -102,13 +102,19 @@ async def clear(ctx, amount = 100):
 #mute
 @Bot.command()
 @commands.has_any_role("kicker" )
-async def mute(ctx, member: discord.Member):
-	await ctx.channel.purge(limit = 1)
-
+async def mute(ctx, time: int, member: discord.Member):
 	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
-
 	await member.add_roles( mute_role )
-	await ctx.send(f'y { member.mention } ограничение чата, за нарушение правил!')
+	await member.add_roles( mute_role )
+	
+
+	if time > 0:
+		await ctx.send(f'y { member.mention } ограничение чата, за нарушение правил! На {time} минут!')
+		await asyncio.sleep(time * 60)
+		await member.remove_roles( mute_role )
+		await ctx.send(f'y { member.mention } снят мут, больше не нарушай!')
+
+
 
 #unmute
 @Bot.command()
