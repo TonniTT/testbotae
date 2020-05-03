@@ -33,6 +33,14 @@ async def on_member_join(member):
     for channel in member.guild.channels:
         if str(channel) == "flood" or str(channel) == "moderator-chat":
             await channel.send(f"""НА СЕРВЕР ЗАЛЕТЕЛ {member.mention} (ЧЕК ЕГО НА ОБХОД МУТА) """)
+	
+
+#leave
+@Bot.event
+async def on_member_remove(member):
+    for channel in member.guild.channels:
+        if str(channel) == "flood":
+            await channel.send(f"""Нас покинул {member.mention}""")
 #Help
 @Bot.command()
 @commands.has_any_role("kicker" )
