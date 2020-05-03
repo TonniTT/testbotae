@@ -11,7 +11,7 @@ tm = datetime.now()
 vrem = "   {}:{}".format(tm.hour, tm.minute)
 
 #UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
-#UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере.
+#UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере. Комада !giverole and !removerole добавлены(использовать могут только с ролью).
 
 
 PREFIX = '!'
@@ -31,9 +31,8 @@ async def on_ready():
 @Bot.event
 async def on_member_join(member):
     for channel in member.guild.channels:
-        if str(channel) == "join":
+        if str(channel) == "основной":
             await channel.send(f"""Welcome to the server {member.mention}""")
-
 #Help
 @Bot.command()
 @commands.has_any_role("kicker" )
@@ -154,9 +153,9 @@ async def mute(ctx,  member: discord.Member, time: int, reason = None):
 
 EXROLE = 705126936539693058
 
+#role
 @Bot.command()
 async def role(ctx, role: str ):
-	await ctx.channel.purge(limit = 1)
 	member = ctx.message.author
 	roli = member.roles #Список ролей КОНКРЕТНОГО юзера
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
@@ -176,6 +175,25 @@ async def role(ctx, role: str ):
 
 	else:
 		await ctx.send(f'У вас слишком много ролей!')
+
+#giverole
+@Bot.command()
+@commands.has_any_role("kicker" )
+async def giverole(ctx, member: discord.Member, role: str ):
+	await ctx.channel.purge(limit = 1)
+	role = discord.utils.get( ctx.message.guild.roles, name = role)
+	await member.add_roles( role )
+	await ctx.send(f' { member } получил роль {role}')
+
+#removerole
+@Bot.command()
+@commands.has_any_role("kicker" )
+async def removerole(ctx, member: discord.Member, role: str ):
+	await ctx.channel.purge(limit = 1)
+	role = discord.utils.get( ctx.message.guild.roles, name = role)
+	await member.remove_roles( role )
+	await ctx.send(f' { member } получил роль {role}')
+
 
 token = os.environ.get('BOT_TOKEN')
 Bot.run(str(token))
