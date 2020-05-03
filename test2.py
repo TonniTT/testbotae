@@ -148,7 +148,7 @@ async def mute(ctx,  member: discord.Member, time: int, reason = None):
 EXROLE = 705126936539693058
 
 @Bot.command()
-async def roles(ctx, role: str ):
+async def role(ctx, role: str ):
 	await ctx.channel.purge(limit = 1)
 	member = ctx.message.author
 	roli = member.roles #Список ролей КОНКРЕТНОГО юзера
