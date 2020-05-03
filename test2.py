@@ -11,7 +11,7 @@ tm = datetime.now()
 vrem = "   {}:{}".format(tm.hour, tm.minute)
 
 #UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
-
+#UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере.
 
 
 PREFIX = '!'
@@ -26,6 +26,13 @@ ploxie_slova = ['мать ебал', 'м']#список запрещенных �
 @Bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
+
+#Welcome
+@Bot.event
+async def on_member_join(member):
+    for channel in member.guild.channels:
+        if str(channel) == "join":
+            await channel.send(f"""Welcome to the server {member.mention}""")
 
 #Help
 @Bot.command()
