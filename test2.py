@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
+import asyncio
 import os
 today = datetime.now().date()
 tm = datetime.now()
@@ -8,6 +9,10 @@ vrem = "   {}:{}".format(tm.hour, tm.minute)
 today = datetime.now().date()
 tm = datetime.now()
 vrem = "   {}:{}".format(tm.hour, tm.minute)
+
+#UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
+
+
 
 PREFIX = '!'
 
@@ -36,7 +41,7 @@ async def help ( ctx ):
 	emb.add_field( name = '{}mute time @name'.format(PREFIX), value='Запретить писать в чат.')
 	emb.add_field( name = '{}unmute @name'.format(PREFIX), value='Разрешить писать в чат.')
 	emb.add_field( name = '{}kick @name'.format(PREFIX), value='Удаление участника с сервера.')
-	emb.add_field( name = '_', value='_')
+	emb.add_field( name = '{}role rolename'.format(PREFIX), value='Получить роль.')
 	emb.add_field( name = '{}help'.format(PREFIX), value='Показать это сообщение.')
 	emb.add_field( name = '_', value='_')
 
@@ -47,24 +52,27 @@ async def help ( ctx ):
 @commands.has_any_role("kicker" )
 async def  kick(ctx, member: discord.Member, *, reason = None):
 	await ctx.channel.purge(limit = 1)#СТИРАЕМ СООБЩЕНИЕ С КОММАНДОЙ .kcik
-
+	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
+	emb.set_author(name = member.name, icon_url = member.avatar_url)
+	emb.add_field(name = 'Kick user', value = 'Юзер {}'.format(member) + ' кикнут по причине "{}" '.format(reason))
+	emb.set_footer(text ="Был кикнут администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
+	await ctx.send(embed = emb)
 	await member.kick(reason = reason)
-	await ctx.send(f"юзер {member.mention} кикнут за плохое поведение")
 
 #ban
 @Bot.command( pass_context = True)
 @commands.has_any_role("kicker" )
-async def banan(ctx, member: discord.Member, *, reason = None):
-    emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
-    await ctx.channel.purge(limit = 1)#удаляем сообщение с этой командой из чата
+async def ban(ctx, member: discord.Member, *, reason = None):
+	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
+	await ctx.channel.purge(limit = 1)#удаляем сообщение с этой командой из чата
 
-    emb.set_author(name = member.name, icon_url = member.avatar_url)#Показываем имя и аватар забаненого пользователя
-    emb.add_field(name = 'Ban user', value = 'Юзер {}'.format(member) + ' забанен по причине "{}" '.format(reason))
-    emb.set_footer(text ="Был забанен администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
+	emb.set_author(name = member.name, icon_url = member.avatar_url)#Показываем имя и аватар забаненого пользователя
+	emb.add_field(name = 'Ban user', value = 'Юзер {}'.format(member) + ' забанен по причине "{}" '.format(reason))
+	emb.set_footer(text ="Был забанен администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
 
-    await ctx.send(embed = emb)
-    await member.send( 'You banned from server' )
-    await member.ban(reason = reason)
+	await ctx.send(embed = emb)
+	await member.send( 'You banned from server' )
+	await member.ban(reason = reason)
 
 
 #unban
@@ -98,22 +106,8 @@ async def on_message( message ):
 @commands.has_any_role("kicker" )
 async def clear(ctx, amount = 100):
 	await ctx.channel.purge(limit = amount)
-
-#mute
-@Bot.command()
-@commands.has_any_role("kicker" )
-async def mute(ctx, time: int, member: discord.Member):
-	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
-	await member.add_roles( mute_role )
-	await member.add_roles( mute_role )
-	
-
-	if time > 0:
-		await ctx.send(f'y { member.mention } ограничение чата, за нарушение правил! На {time} минут!')
-		await asyncio.sleep(time * 60)
-		await member.remove_roles( mute_role )
-		await ctx.send(f'y { member.mention } снят мут, больше не нарушай!')
-
+	emb = discord.Embed(title = 'Чат очищен администрацией.')
+	await ctx.send(embed = emb)
 
 
 #unmute
@@ -123,9 +117,58 @@ async def unmute(ctx, member: discord.Member):
 	await ctx.channel.purge(limit = 1)
 
 	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
-
+	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
+	emb.set_author(name = member.name, icon_url = member.avatar_url)
+	emb.add_field(name = 'Unmute user', value = 'Юзеру {}'.format(member) + ' снят мут.')
+	emb.set_footer(text ="Мут снят администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
+	await ctx.send(embed = emb)
 	await member.remove_roles( mute_role )
-	await ctx.send(f'y { member.mention } снят мут, больше не нарушай!')
+
+
+#mute
+@Bot.command()
+@commands.has_any_role("kicker" )
+async def mute(ctx,  member: discord.Member, time: int, reason = None):
+	await ctx.channel.purge(limit = 1)
+	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
+	await member.add_roles( mute_role )
+	
+
+	if time > 0:
+		emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
+		emb.set_author(name = member.name, icon_url = member.avatar_url)
+		emb.add_field(name = 'Mute user', value = 'Юзеру {}'.format(member) + ' выдан мут. Причина: "{}" '.format(reason))
+		emb.set_footer(text ="Мут выдан администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
+		await ctx.send(embed = emb)
+		await asyncio.sleep(time * 60)
+		await member.remove_roles( mute_role )
+		await ctx.send(f'y { member.mention } снят мут, больше не нарушай!')
+
+
+EXROLE = 705126936539693058
+
+@Bot.command()
+async def roles(ctx, role: str ):
+	await ctx.channel.purge(limit = 1)
+	member = ctx.message.author
+	roli = member.roles #Список ролей КОНКРЕТНОГО юзера
+	role = discord.utils.get( ctx.message.guild.roles, name = role)
+	k = 0
+	for rol in roli:
+		if rol.id == EXROLE: #ЕСЛИ РОЛЬ = EVERYONE =>
+			k = k+1
+			continue #ПРОПУСКАЕМ(СЛЕДУЮЩАЯ ИТЕРАЦИЯ)
+		else:
+			k = k+1
+	if k < 3:
+		if str(role) != "Atlant RP" and str(role) != "Гл.Модератор" and str(role) != "kicker" and str(role) != "Модератор" and str(role) != "Администрация" and str(role) != "Следящий за госс" and str(role) != "Следящий за мафиями" and str(role) != "Следящий за бизами" and str(role) != "Следящий за гетто" and str(role) != "Supports" and str(role) != "Лидеры":
+			await member.add_roles( role )
+			await ctx.send(f' { member.mention } получил роль { role }!')
+		else:
+			await ctx.send(f' { member.mention } эту роль невозможно получить!')
+
+	else:
+		await ctx.send(f'У вас слишком много ролей!')
 
 token = os.environ.get('BOT_TOKEN')
 Bot.run(str(token))
