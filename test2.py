@@ -137,7 +137,7 @@ async def mute(ctx,  member: discord.Member, time: int, reason = None):
 	if time > 0:
 		emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
 		emb.set_author(name = member.name, icon_url = member.avatar_url)
-		emb.add_field(name = 'Mute user', value = 'Юзеру {}'.format(member) + ' выдан мут на {} минут.'.format(time) 'Причина: "{}"'.format(reason))
+		emb.add_field(name = 'Mute user', value = 'Юзеру {}'.format(member) + ' выдан мут на {} минут.'.format(time) + 'Причина: "{}"'.format(reason))
 		emb.set_footer(text ="Мут выдан администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
 		await ctx.send(embed = emb)
 		await asyncio.sleep(time * 60)
