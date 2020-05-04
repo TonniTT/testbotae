@@ -31,7 +31,7 @@ async def on_ready():
 @Bot.event
 async def on_member_join(member):
     for channel in member.guild.channels:
-        if str(channel) == "flood" or str(channel) == "moderator-chat":
+        if str(channel) == "moderator-chat":
             await channel.send(f"""НА СЕРВЕР ЗАЛЕТЕЛ {member.mention} (ЧЕК ЕГО НА ОБХОД МУТА) """)
 	
 
