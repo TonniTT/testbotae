@@ -47,7 +47,7 @@ async def on_member_remove(member):
 		else:
 			if str(rol.id) == '706195044498931783':
 				await member.ban(reason = 'ОБХОД МУТА')
-			else:
+			
 #Help
 @Bot.command()
 @commands.has_any_role("kicker" )
