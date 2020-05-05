@@ -1,6 +1,7 @@
 #UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
 #UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере. Комада !giverole and !removerole добавлены(использовать могут только с ролью).
 #UPD 04.05.2020: Обновлено приветствие. Добавлено сообщение при выходе с сервера. Если выйти с серва с ролью mute = бан.
+#UPD 05.05.2020: Обновлено меню !help
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -25,31 +26,13 @@ EXROLE = 705126936539693058
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
-@Bot.command()
-async def roler(ctx, member: discord.Member, reason = None):
-	roli = member.roles #Список ролей КОНКРЕТНОГО юзера
-	for rol in roli:
-		if rol.id == EXROLE: #ЕСЛИ РОЛЬ = EVERYONE =>
-			continue #ПРОПУСКАЕМ(СЛЕДУЮЩАЯ ИТЕРАЦИЯ)
-		else:
-			if str(rol.id) == '706174808433492038':
-				await ctx.send(str(rol.id))
-				await ctx.send('ПОПАЛСЯ ПЕТУШАРА')
-
-				await member.ban(reason = reason)
-
-			else:
-				await ctx.send('Wooops')
-
-
-
 
 #Welcome
 @Bot.event
 async def on_member_join(member):
     for channel in member.guild.channels:
-        if str(channel) == "moderator-chat":
-            await channel.send(f"""НА СЕРВЕР ЗАЛЕТЕЛ {member.mention}  """)
+        if str(channel) == "flood":
+            await channel.send(f"""НА СЕРВЕР ЗАЛЕТЕЛ {member.mention} """)
 
 #leave
 @Bot.event
@@ -74,14 +57,14 @@ async def help ( ctx ):
 	emb = discord.Embed( title = 'Навигация по командам')
 
 	emb.add_field( name = '{}clear'.format(PREFIX), value='очистка чата')
-	emb.add_field( name = '{}ban @name'.format(PREFIX), value='Ограничение доступа к серверу. ')
-	emb.add_field( name = '{}unban'.format(PREFIX), value='Удаление ограничения доступа к серверу.')
-	emb.add_field( name = '{}mute time @name'.format(PREFIX), value='Запретить писать в чат.')
+	emb.add_field( name = '{}ban @name reason'.format(PREFIX), value='Ограничение доступа к серверу. ')
+	emb.add_field( name = '{}unban name#xxxx'.format(PREFIX), value='Удаление ограничения доступа к серверу.')
+	emb.add_field( name = '{}mute @name time reason'.format(PREFIX), value='Запретить писать в чат.')
 	emb.add_field( name = '{}unmute @name'.format(PREFIX), value='Разрешить писать в чат.')
 	emb.add_field( name = '{}kick @name'.format(PREFIX), value='Удаление участника с сервера.')
 	emb.add_field( name = '{}role rolename'.format(PREFIX), value='Получить роль.')
 	emb.add_field( name = '{}help'.format(PREFIX), value='Показать это сообщение.')
-	emb.add_field( name = '_', value='_')
+	emb.add_field( name = '{}giverole/removerole @name role'.format(PREFIX), value='Снять/выдать роль')
 
 	await ctx.send(embed = emb)
 
@@ -225,6 +208,7 @@ async def removerole(ctx, member: discord.Member, role: str ):
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
 	await member.remove_roles( role )
 	await ctx.send(f' { member } получил роль {role}')
+
 
 token = os.environ.get('BOT_TOKEN')
 Bot.run(str(token))
