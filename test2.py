@@ -207,7 +207,7 @@ async def removerole(ctx, member: discord.Member, role: str ):
 	await ctx.channel.purge(limit = 1)
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
 	await member.remove_roles( role )
-	await ctx.send(f' { member } получил роль {role}')
+	await ctx.send(f' { member } лишился роли {role}')
 
 
 token = os.environ.get('BOT_TOKEN')
