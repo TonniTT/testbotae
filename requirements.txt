@@ -4,4 +4,3 @@ websockets
 chardet
 datetime
 asyncio
-jsonlib
