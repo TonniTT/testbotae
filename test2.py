@@ -21,7 +21,6 @@ Bot.remove_command ('help')
 ploxie_slova = ['мать ебал', 'м']#список запрещенных слов.
 EXROLE = 705126936539693058
 
-
 YOURGUILDSID = 705126936539693058
 YOURID = 302315861916516354
 YOURFILENAME = "xp.json" # with .json (or txt, etc. at the and)
@@ -72,8 +71,6 @@ async def on_member_join(member):
 	for channel in member.guild.channels:
 		if str(channel) == "flood":
 			await channel.send(f"""К нам присоединился {member.mention}""")
-
-
 
 #leave
 @Bot.event
@@ -156,6 +153,14 @@ async def unban(ctx, *, member):
 #clear
 @Bot.command()
 @commands.has_any_role("kicker" )
+async def test(ctx):
+
+	await ctx.send(str("""```md\n#Пивет```"""))
+
+
+#clear
+@Bot.command()
+@commands.has_any_role("kicker" )
 async def clear(ctx, amount = 100):
 	await ctx.channel.purge(limit = amount)
 	emb = discord.Embed(title = 'Чат очищен администрацией.')
@@ -169,7 +174,7 @@ async def unmute(ctx, member: discord.Member):
 	await ctx.channel.purge(limit = 1)
 
 	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
-	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
+	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.green())
 	emb.set_author(name = member.name, icon_url = member.avatar_url)
 	emb.add_field(name = 'Unmute user', value = 'Юзеру {}'.format(member) + ' снят мут.')
 	emb.set_footer(text ="Мут снят администратором {} 'ом".format(ctx.author.name) , icon_url = ctx.author.avatar_url)
@@ -215,12 +220,12 @@ async def role(ctx, role: str ):
 	if k < 3:
 		if str(role) != "Atlant RP" and str(role) != "Гл.Модератор" and str(role) != "kicker" and str(role) != "Модератор" and str(role) != "Администрация" and str(role) != "Следящий за госс" and str(role) != "Следящий за мафиями" and str(role) != "Следящий за бизами" and str(role) != "Следящий за гетто" and str(role) != "Supports" and str(role) != "Лидеры":
 			await member.add_roles( role )
-			await ctx.send(f' { member.mention } получил роль { role }!')
+			await ctx.send(f"""  { member.mention } ```fix\n получил роль { role }!\n``` """)
 		else:
-			await ctx.send(f' { member.mention } эту роль невозможно получить!')
+			await ctx.send(str( f""" { member.mention } ```xl\n'Данную роль получить нельзя!'```"""))
 
 	else:
-		await ctx.send(f'У вас слишком много ролей!')
+		await ctx.send(str("""```xl\n'У вас слишком много ролей!'\n```"""))
 
 #giverole
 @Bot.command()
@@ -229,7 +234,7 @@ async def giverole(ctx, member: discord.Member, role: str ):
 	await ctx.channel.purge(limit = 1)
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
 	await member.add_roles( role )
-	await ctx.send(f' { member } получил роль {role}')
+	await ctx.send(f"""  { member.mention } ```fix\n получил роль { role }!\n``` """)
 
 #removerole
 @Bot.command()
@@ -238,8 +243,7 @@ async def removerole(ctx, member: discord.Member, role: str ):
 	await ctx.channel.purge(limit = 1)
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
 	await member.remove_roles( role )
-	await ctx.send(f' { member } лишился роли {role}')
-
+	await ctx.send(f"""  { member.mention } ```diff\n -лишился  { role }!\n``` """)
 
 token = os.environ.get('BOT_TOKEN')
 Bot.run(str(token))
