@@ -21,18 +21,65 @@ Bot.remove_command ('help')
 ploxie_slova = ['мать ебал', 'м']#список запрещенных слов.
 EXROLE = 705126936539693058
 
+
+YOURGUILDSID = 705126936539693058
+YOURID = 302315861916516354
+YOURFILENAME = "xp.json" # with .json (or txt, etc. at the and)
+
+# it may throw an error when a member joins when the bot isn't running
+
+m = {}
+
+@Bot.event
+async def on_ready():
+    global m
+    with open(YOURFILENAME, "r") as j:
+        m = json.load(j)
+        j.close()
+    if len(m) == 0:
+        m = {}
+        for member in Bot.get_guild(YOURGUILDSID).members:
+            m[str(member.id)] = {"xp" : 0, "messageCountdown" : 0}
+    print("ready")
+    while True:
+        try:
+            for member in Bot.get_guild(YOURGUILDSID).members:
+                m[str(member.id)]["messageCountdown"] -= 1
+        except:
+            pass
+        await asyncio.sleep(1)
+
+@Bot.event
+async def on_message( message ):
+    await Bot.process_commands( message )
+    global m
+    if message.content == "-stop" and message.author.id == YOURID:
+        with open(YOURFILENAME, "w") as j:
+            j.write( json.dumps(m) )
+            j.close()
+        await Bot.close()
+    elif message.content == "-xp":
+        if m[str(message.author.id)]["xp"] < 100:
+            await message.channel.send('Твой ранг: нуб👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+    elif message.author != Bot.user:
+        if m[str(message.author.id)]["messageCountdown"] <= 0:
+            m[str(message.author.id)]["xp"] += 10
+            m[str(message.author.id)]["messageCountdown"] = 10
+
+@Bot.event
+async def on_member_join(member):
+	m[str(member.id)] = {"xp" : 0, "messageCountdown" : 0}
+	for channel in member.guild.channels:
+		if str(channel) == "flood":
+			await channel.send(f"""К нам присоединился {member.mention}""")
+
 #ready
 @Bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(Bot))
 
 
-#Welcome
-@Bot.event
-async def on_member_join(member):
-    for channel in member.guild.channels:
-        if str(channel) == "flood":
-            await channel.send(f"""НА СЕРВЕР ЗАЛЕТЕЛ {member.mention} """)
+
 
 #leave
 @Bot.event
@@ -110,16 +157,6 @@ async def unban(ctx, *, member):
 			await ctx.guild.unban(user)
 			await ctx.send(f'Unbanned {user.mention}')
 			return
-
-#filter
-@Bot.event
-async def on_message( message ):
-	await Bot.process_commands( message )
-
-	msg = message.content.lower()
-
-	if msg in ploxie_slova:
-		await message.delete()
 
 
 #clear
