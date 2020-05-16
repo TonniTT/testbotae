@@ -2,7 +2,7 @@
 #UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере. Комада !giverole and !removerole добавлены(использовать могут только с ролью).
 #UPD 04.05.2020: Обновлено приветствие. Добавлено сообщение при выходе с сервера. Если выйти с серва с ролью mute = бан.
 #UPD 05.05.2020: Обновлено меню !help
-#UPD 16.05.2020: Добавлена система рангов. Команда top.(beta)
+#UPD 16.05.2020: Добавлена система рангов.(beta)
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -62,9 +62,10 @@ async def on_message( message ):
     elif message.content == "rank":
         if m[str(message.author.id)]["xp"] <= 100:
             await message.channel.send('Твой ранг: нуб👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
-    elif message.content == "top":
+    elif message.content == "list":
         for member in Bot.get_guild(YOURGUILDSID).members:
-                await message.channel.send(str(m[str(member.id)]["xp"]) + ' ' + str(member.mention))
+            if m[str(member.id)]["xp"] > 0:
+                await message.channel.send(str(m[str(member.id)]["xp"]) + ' ' + str(member.mention))        
     elif message.author != Bot.user:
         if m[str(message.author.id)]["messageCountdown"] <= 0:
             m[str(message.author.id)]["xp"] += 10
