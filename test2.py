@@ -65,6 +65,10 @@ async def on_message( message ):
     elif message.content == "top":
         for member in Bot.get_guild(YOURGUILDSID).members:
                 await message.channel.send(str(m[str(member.id)]["xp"]) + ' ' + str(member.mention))
+    elif message.author != Bot.user:
+        if m[str(message.author.id)]["messageCountdown"] <= 0:
+            m[str(message.author.id)]["xp"] += 10
+            m[str(message.author.id)]["messageCountdown"] = 10
 
 
 @Bot.event
