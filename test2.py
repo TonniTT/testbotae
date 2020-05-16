@@ -73,12 +73,6 @@ async def on_member_join(member):
 		if str(channel) == "flood":
 			await channel.send(f"""К нам присоединился {member.mention}""")
 
-#ready
-@Bot.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(Bot))
-
-
 
 
 #leave
