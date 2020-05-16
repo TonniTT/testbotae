@@ -57,13 +57,14 @@ async def on_message( message ):
             j.write( json.dumps(m) )
             j.close()
         await Bot.close()
-    elif message.content == "-xp":
-        if m[str(message.author.id)]["xp"] < 100:
+    elif message.content == "rank":
+        if m[str(message.author.id)]["xp"] <= 100:
             await message.channel.send('Твой ранг: нуб👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
     elif message.author != Bot.user:
         if m[str(message.author.id)]["messageCountdown"] <= 0:
             m[str(message.author.id)]["xp"] += 10
             m[str(message.author.id)]["messageCountdown"] = 10
+
 
 @Bot.event
 async def on_member_join(member):
