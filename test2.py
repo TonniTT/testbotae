@@ -19,10 +19,10 @@ vrem = "   {}:{}".format(tm.hour, tm.minute)
 PREFIX = '!'
 Bot = commands.Bot(command_prefix = '!')
 Bot.remove_command ('help')
-ploxie_slova = ['мать ебал', 'м']#список запрещенных слов.
-EXROLE = 705126936539693058
+#список запрещенных слов.
+EXROLE = 714531560459599903
 
-YOURGUILDSID = 705126936539693058
+YOURGUILDSID = 714531560459599903
 YOURID = 302315861916516354
 YOURFILENAME = "xp.json" # with .json (or txt, etc. at the and)
 
@@ -49,7 +49,6 @@ async def on_ready():
             pass
         await asyncio.sleep(1)
 
-
 @Bot.event
 async def on_message( message ):
     await Bot.process_commands( message )
@@ -61,16 +60,17 @@ async def on_message( message ):
         await Bot.close()
     elif message.content == "rank":
         if m[str(message.author.id)]["xp"] <= 100:
-            await message.channel.send('Твой ранг: нуб👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+            await message.channel.send('Твой ранг: Новичок👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 500:
+        	await message.channel.send('Твой ранг: 👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
     elif message.content == "list":
         for member in Bot.get_guild(YOURGUILDSID).members:
             if m[str(member.id)]["xp"] > 0:
                 await message.channel.send(str(m[str(member.id)]["xp"]) + ' ' + str(member.mention))        
     elif message.author != Bot.user:
         if m[str(message.author.id)]["messageCountdown"] <= 0:
-            m[str(message.author.id)]["xp"] += 10
-            m[str(message.author.id)]["messageCountdown"] = 10
-
+            m[str(message.author.id)]["xp"] += 5
+            m[str(message.author.id)]["messageCountdown"] = 5
 
 @Bot.event
 async def on_member_join(member):
@@ -90,12 +90,12 @@ async def on_member_remove(member):
 		if rol.id == EXROLE: #ЕСЛИ РОЛЬ = EVERYONE =>
 			continue #ПРОПУСКАЕМ(СЛЕДУЮЩАЯ ИТЕРАЦИЯ)
 		else:
-			if str(rol.id) == '706195044498931783':
+			if str(rol.id) == '714775091178766336':
 				await member.ban(reason = 'ОБХОД МУТА')
 			
 #Help
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def help ( ctx ):
 	await ctx.channel.purge(limit = 1)
 
@@ -113,9 +113,10 @@ async def help ( ctx ):
 
 	await ctx.send(embed = emb)
 
+
 #kick
 @Bot.command( pass_context = True )
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def  kick(ctx, member: discord.Member, *, reason = None):
 	await ctx.channel.purge(limit = 1)#СТИРАЕМ СООБЩЕНИЕ С КОММАНДОЙ .kcik
 	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
@@ -127,7 +128,7 @@ async def  kick(ctx, member: discord.Member, *, reason = None):
 
 #ban
 @Bot.command( pass_context = True)
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def ban(ctx, member: discord.Member, *, reason = None):
 	emb = discord.Embed(title = '{}  в {}'.format(today, vrem), color = discord.Color.red())
 	await ctx.channel.purge(limit = 1)#удаляем сообщение с этой командой из чата
@@ -143,7 +144,7 @@ async def ban(ctx, member: discord.Member, *, reason = None):
 
 #unban
 @Bot.command(pass_context = True)
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def unban(ctx, *, member):
 	banned_users = await ctx.guild.bans()
 	member_name, member_discriminator = member.split('#')
@@ -158,16 +159,16 @@ async def unban(ctx, *, member):
 
 
 #clear
-@Bot.command()
-@commands.has_any_role("kicker" )
-async def test(ctx):
+#@Bot.command()
+#@commands.has_any_role("Приблатнённый","Блатная" )
+#async def test(ctx):
 
-	await ctx.send(str("""```md\n#Пивет```"""))
+#	await ctx.send(str("""```md\n#Пивет```"""))
 
 
 #clear
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная")
 async def clear(ctx, amount = 100):
 	await ctx.channel.purge(limit = amount)
 	emb = discord.Embed(title = 'Чат очищен администрацией.')
@@ -176,7 +177,7 @@ async def clear(ctx, amount = 100):
 
 #unmute
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def unmute(ctx, member: discord.Member):
 	await ctx.channel.purge(limit = 1)
 
@@ -191,7 +192,7 @@ async def unmute(ctx, member: discord.Member):
 
 #mute
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def mute(ctx,  member: discord.Member, time: int, reason = None):
 	await ctx.channel.purge(limit = 1)
 	mute_role = discord.utils.get( ctx.message.guild.roles, name = 'mute')
@@ -225,7 +226,7 @@ async def role(ctx, role: str ):
 		else:
 			k = k+1
 	if k < 3:
-		if str(role) != "Atlant RP" and str(role) != "Гл.Модератор" and str(role) != "kicker" and str(role) != "Модератор" and str(role) != "Администрация" and str(role) != "Следящий за госс" and str(role) != "Следящий за мафиями" and str(role) != "Следящий за бизами" and str(role) != "Следящий за гетто" and str(role) != "Supports" and str(role) != "Лидеры":
+		if str(role) != "Кент" and str(role) != "Приблатнённый" and str(role) != "Блатная":
 			await member.add_roles( role )
 			await ctx.send(f"""  { member.mention } ```fix\n получил роль { role }!\n``` """)
 		else:
@@ -236,7 +237,7 @@ async def role(ctx, role: str ):
 
 #giverole
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def giverole(ctx, member: discord.Member, role: str ):
 	await ctx.channel.purge(limit = 1)
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
@@ -245,7 +246,7 @@ async def giverole(ctx, member: discord.Member, role: str ):
 
 #removerole
 @Bot.command()
-@commands.has_any_role("kicker" )
+@commands.has_any_role("Приблатнённый","Блатная" )
 async def removerole(ctx, member: discord.Member, role: str ):
 	await ctx.channel.purge(limit = 1)
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
