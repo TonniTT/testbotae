@@ -3,6 +3,13 @@
 #UPD 04.05.2020: Обновлено приветствие. Добавлено сообщение при выходе с сервера. Если выйти с серва с ролью mute = бан.
 #UPD 05.05.2020: Обновлено меню !help
 #UPD 16.05.2020: Добавлена система рангов.(beta)
+import discord
+from discord.ext import commands
+from datetime import datetime
+import asyncio
+import os
+import json
+
 today = datetime.now().date()
 tm = datetime.now()
 vrem = "   {}:{}".format(tm.hour, tm.minute)
