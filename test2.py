@@ -19,7 +19,6 @@ vrem = "   {}:{}".format(tm.hour, tm.minute)
 PREFIX = '!'
 Bot = commands.Bot(command_prefix = '!')
 Bot.remove_command ('help')
-#список запрещенных слов.
 EXROLE = 714531560459599903
 
 YOURGUILDSID = 714531560459599903
@@ -59,10 +58,22 @@ async def on_message( message ):
             j.close()
         await Bot.close()
     elif message.content == "rank":
-        if m[str(message.author.id)]["xp"] <= 100:
-            await message.channel.send('Твой ранг: Новичок👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
-        elif  m[str(message.author.id)]["xp"] <= 500:
-        	await message.channel.send('Твой ранг: 👶' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        if m[str(message.author.id)]["xp"] <= 610:
+            await message.channel.send('Твой ранг: Новичок.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 1400:
+        	await message.channel.send('Твой ранг: Страж.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 2150:
+        	await message.channel.send('Твой ранг: Рыцарь.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 2930:
+        	await message.channel.send('Твой ранг: Герой.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 3700:
+        	await message.channel.send('Твой ранг: Легенда.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 4460:
+        	await message.channel.send('Твой ранг: Властелин.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 5420:
+        	await message.channel.send('Твой ранг: Божество.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
+        elif  m[str(message.author.id)]["xp"] <= 5421:
+        	await message.channel.send('Твой ранг: Чёрт.' + '\n' ' XP = ' + str(m[str(message.author.id)]["xp"]))
     elif message.content == "list":
         for member in Bot.get_guild(YOURGUILDSID).members:
             if m[str(member.id)]["xp"] > 0:
