@@ -19,6 +19,7 @@ vrem = "   {}:{}".format(tm.hour, tm.minute)
 PREFIX = '!'
 Bot = commands.Bot(command_prefix = '!')
 Bot.remove_command ('help')
+#список запрещенных слов.
 EXROLE = 714531560459599903
 
 YOURGUILDSID = 714531560459599903
@@ -80,7 +81,7 @@ async def on_message( message ):
                 await message.channel.send(str(m[str(member.id)]["xp"]) + ' ' + str(member.mention))        
     elif message.author != Bot.user:
         if m[str(message.author.id)]["messageCountdown"] <= 0:
-            m[str(message.author.id)]["xp"] += 10
+            m[str(message.author.id)]["xp"] += 5
             m[str(message.author.id)]["messageCountdown"] = 5
 
 @Bot.event
