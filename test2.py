@@ -87,14 +87,14 @@ async def on_message( message ):
 async def on_member_join(member):
 	m[str(member.id)] = {"xp" : 0, "messageCountdown" : 0}
 	for channel in member.guild.channels:
-		if str(channel) == "chat":
+		if str(channel) == "flood":
 			await channel.send(f"""К нам присоединился {member.mention}""")
 
 #leave
 @Bot.event
 async def on_member_remove(member):
 	for channel in member.guild.channels:
-		if str(channel) == "chat":
+		if str(channel) == "flood":
 			await channel.send(f"""Нас покинул {member.mention}""")
 	roli = member.roles #Список ролей КОНКРЕТНОГО юзера
 	for rol in roli:
