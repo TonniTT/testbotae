@@ -3,12 +3,14 @@
 #UPD 04.05.2020: Обновлено приветствие. Добавлено сообщение при выходе с сервера. Если выйти с серва с ролью mute = бан.
 #UPD 05.05.2020: Обновлено меню !help
 #UPD 16.05.2020: Добавлена система рангов.(beta)
+#UPD 29.05.2020: Добавлены игры.
 import discord
 from discord.ext import commands
 from datetime import datetime
 import asyncio
 import os
 import json
+import random
 
 today = datetime.now().date()
 tm = datetime.now()
@@ -39,7 +41,7 @@ async def on_ready():
     if len(m) == 0:
         m = {}
         for member in Bot.get_guild(YOURGUILDSID).members:
-            m[str(member.id)] = {"xp" : 0, "messageCountdown" : 0}
+            m[str(member.id)] = {"xp" : 0, "messageCountdown" : 0, "money" : 0, "days" : 0, "car" : 0, "house" : 0, "phone" : 0}
     print("ready")
     while True:
         try:
@@ -82,7 +84,7 @@ async def on_message( message ):
     elif message.author != Bot.user:
         if m[str(message.author.id)]["messageCountdown"] <= 0:
             m[str(message.author.id)]["xp"] += 5
-            m[str(message.author.id)]["messageCountdown"] = 5
+            m[str(message.author.id)]["messageCountdown"] = 15
 
 @Bot.event
 async def on_member_join(member):
@@ -107,7 +109,6 @@ async def on_member_remove(member):
 			
 #Help
 @Bot.command()
-@commands.has_any_role("Приблатнённый","Блатная" )
 async def help ( ctx ):
 	await ctx.channel.purge(limit = 1)
 
@@ -122,8 +123,237 @@ async def help ( ctx ):
 	emb.add_field( name = '{}role rolename'.format(PREFIX), value='Получить роль.')
 	emb.add_field( name = '{}help'.format(PREFIX), value='Показать это сообщение.')
 	emb.add_field( name = '{}giverole/removerole @name role'.format(PREFIX), value='Снять/выдать роль')
+	emb.add_field( name = '{}работать'.format(PREFIX), value='Начать работать.')
+	emb.add_field( name = '{}казино summa'.format(PREFIX), value='Игра в казино.')
+	emb.add_field( name = '{}стакан 1-3 сумма'.format(PREFIX), value='Игра в стаканчики.')
+	emb.add_field( name = '{}курс вверх/вниз сумма'.format(PREFIX), value='Угадать курс.')
 
 	await ctx.send(embed = emb)
+
+#game1
+@Bot.command( pass_context = True )
+async def казино(ctx,  *, stavka: int):
+	member = ctx.message.author
+	global m
+	if int(stavka) < m[str(ctx.message.author.id)]["money"]:
+		kazino = random.randint(1, 2)
+		coefficient = random.randint(1, 15)
+		if kazino == 1:
+			if coefficient == 1 or coefficient == 3 or coefficient == 5 or coefficient == 7 or coefficient == 9 or coefficient == 11 or coefficient == 15:
+				await ctx.message.channel.send(f'{member.mention}, Вы выйграли:' + str(stavka*2) + '$' +'!')
+				m[str(ctx.message.author.id)]["money"] += stavka*2
+			elif coefficient == 2 or coefficient == 4 or coefficient == 6 or coefficient == 8 or coefficient == 10 or coefficient == 12 or coefficient == 14:
+				await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*3) + '$' +'!')
+				m[str(ctx.message.author.id)]["money"] += stavka*3
+			elif coefficient == 13:
+				await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*7) + '$' +'!')
+				m[str(ctx.message.author.id)]["money"] += stavka*7
+		elif kazino == 2:
+			await ctx.message.channel.send(f'{ member.mention }, Вы проиграли ' + str(stavka) + '$' + '!')
+			m[str(ctx.message.author.id)]["money"] -= stavka 
+
+	else:
+		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.')
+#game2
+@Bot.command( pass_context = True )
+async def стакан(ctx, stakan: int, summa: int):
+	member = ctx.message.author
+	global m
+	truestakan = random.randint(1, 3)
+	caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
+	if int(truestakan) == int(stakan):
+		await ctx.message.channel.send(f'{member.mention}, Вы угадали. Приз: ' + str(summa*caf) + "$!" )
+		m[str(ctx.message.author.id)]["money"] += summa*caf
+	else:
+		await ctx.message.channel.send(f'{member.mention}, Вы не угадали. Это был ' + str(truestakan) + "-й стакан." )
+		m[str(ctx.message.author.id)]["money"] -= summa
+
+#game3
+@Bot.command( pass_context = True )
+async def курс(ctx, updown: str, summa: int):
+	member = ctx.message.author
+	global m
+	updowns = random.choice(['вверх', 'вниз'])
+	caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
+	if str(updowns) == str(updown):
+		await ctx.message.channel.send(f'{member.mention}, Вы угадали. \n✅Заработано: ' + str(summa*caf) + "$!" )
+		m[str(ctx.message.author.id)]["money"] += summa*caf
+	else:
+		if updowns == 'вниз':
+			await ctx.message.channel.send(f'{member.mention}, Вы не угадали.\n Курс подешевел.' + '\n ❌Потеряно: ' + str(summa) + '$' )
+		elif updowns == 'вверх':
+			await ctx.message.channel.send(f'{member.mention}, Вы не угадали. \nКурс подорожал' + '\n ❌Потеряно: ' + str(summa) + '$')
+		m[str(ctx.message.author.id)]["money"] -= summa
+
+#work
+@Bot.command( pass_context = True )
+async def работать(ctx, ):
+	global m
+	member = ctx.message.author
+	if m[str(ctx.message.author.id)]["days"] >= 5:
+		await ctx.message.channel.send(f'{member.mention},  рабочая неделя завершена. \n ⏳ Вы сможете работать через час')
+		await asyncio.sleep(25)
+		await ctx.message.channel.send(f'{member.mention},  Можете снова работать!')
+		m[str(ctx.message.author.id)]["days"] -= 5
+
+	else:
+		await ctx.message.channel.send(f'{member.mention}, рабочий день окончен. \n 💵 Вы заработали 500$.')
+		m[str(ctx.message.author.id)]["money"] += 500
+		m[str(ctx.message.author.id)]["days"] += 1
+#shop
+@Bot.command( pass_context = True )
+async def магазин(ctx, ):
+	await ctx.message.channel.send(f"🚗Автомобили: \n=============================\n🔸(ID: 1) Renault Logan - 500.000₽ \n 🔸(ID: 2) MAZDA MX-6 - 150.000₽\n 🔸(ID: 3) ВАЗ (Lada) 2131 - 200.000₽\n 🔸(ID: 4) Skoda Rapid - 1.000.000₽\n=============================\n ❓ Для покупки введите «!авто [ID]»")
+	await ctx.message.channel.send("🏠Дома: \n=============================\n🔸(ID: 1) Домик в деревне - 600.000₽\n 🔸(ID: 2) Коттедж - 2.000.000₽\n 🔸(ID: 3) Дом на берегу моря - 10.000.000₽\n 🔸(ID: 4) Кремль - 21.000.000₽\n=============================\n ❓ Для покупки введите «!дом [ID]»")
+	await ctx.message.channel.send("📱Телефоны: \n=============================\n🔸(ID: 1) NOKIA 3310 - 3000₽\n 🔸(ID: 2) Samsung Galaxy J5 - 20.000₽\n 🔸(ID: 3) MEIZU M6 - 30.000₽\n 🔸(ID: 4) IPHONE XS MAX - 100.000₽\n=============================\n ❓ Для покупки введите «!телефон [ID]»")
+
+@Bot.command( pass_context = True )
+async def авто(ctx, automobile: int):
+	global m
+	member = ctx.message.author
+	if automobile == 1:
+		if m[str(ctx.message.author.id)]["money"] >= 500000:
+			m[str(ctx.message.author.id)]["car"] = 1
+			m[str(ctx.message.author.id)]["money"] -= 500000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Renault Logan' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+	elif automobile == 2:
+		if m[str(ctx.message.author.id)]["money"] >= 150000:
+			m[str(ctx.message.author.id)]["car"] = 2
+			m[str(ctx.message.author.id)]["money"] -= 150000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'MAZDA MX-6' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif automobile == 3:
+		if m[str(ctx.message.author.id)]["money"] >= 200000:
+			m[str(ctx.message.author.id)]["car"] = 3
+			m[str(ctx.message.author.id)]["money"] -= 200000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'ВАЗ (Lada) 2131' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif automobile == 4:
+		if m[str(ctx.message.author.id)]["money"] >= 1000000:
+			m[str(ctx.message.author.id)]["car"] = 4
+			m[str(ctx.message.author.id)]["money"] -= 1000000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Skoda Rapid' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+@Bot.command( pass_context = True )
+async def дом(ctx, home: int):
+	global m
+	member = ctx.message.author
+	if home == 1:
+		if m[str(ctx.message.author.id)]["money"] >= 600000:
+			m[str(ctx.message.author.id)]["house"] = 1
+			m[str(ctx.message.author.id)]["money"] -= 600000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Домик в деревне' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+	elif home == 2:
+		if m[str(ctx.message.author.id)]["money"] >= 2000000:
+			m[str(ctx.message.author.id)]["house"] = 2
+			m[str(ctx.message.author.id)]["money"] -= 2000000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Коттедж' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif home == 3:
+		if m[str(ctx.message.author.id)]["money"] >= 10000000:
+			m[str(ctx.message.author.id)]["house"] = 3
+			m[str(ctx.message.author.id)]["money"] -= 10000000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Дом на берегу моря' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif home == 4:
+		if m[str(ctx.message.author.id)]["money"] >= 21000000:
+			m[str(ctx.message.author.id)]["house"] = 4
+			m[str(ctx.message.author.id)]["money"] -= 21000000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Кремль' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+@Bot.command( pass_context = True )
+async def телефон(ctx, phones: int):
+	global m
+	member = ctx.message.author
+	if phones == 1:
+		if m[str(ctx.message.author.id)]["money"] >= 3000:
+			m[str(ctx.message.author.id)]["phone"] = 1
+			m[str(ctx.message.author.id)]["money"] -= 3000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'NOKIA 3310' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+	elif phones == 2:
+		if m[str(ctx.message.author.id)]["money"] >= 20000:
+			m[str(ctx.message.author.id)]["phone"] = 2
+			m[str(ctx.message.author.id)]["money"] -= 20000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'Samsung Galaxy J5' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif phones == 3:
+		if m[str(ctx.message.author.id)]["money"] >= 30000:
+			m[str(ctx.message.author.id)]["phone"] = 3
+			m[str(ctx.message.author.id)]["money"] -= 30000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'MEIZU M6' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+	elif phones == 4:
+		if m[str(ctx.message.author.id)]["money"] >= 100000:
+			m[str(ctx.message.author.id)]["phone"] = 4
+			m[str(ctx.message.author.id)]["money"] -= 100000
+			await ctx.message.channel.send(f"{member.mention}, Вы купили 'IPHONE XS MAX' ")
+		else:
+			await ctx.message.channel.send(f"{member.mention}, недостаточно средств.")
+
+@Bot.command( pass_context = True )
+async def профиль(ctx, ):
+    global m
+    one = None
+    two = None
+    three = None
+    member = ctx.message.author
+    if m[str(ctx.message.author.id)]["car"] == 1:
+    	one = 'Renault Logan'
+    elif m[str(ctx.message.author.id)]["car"] == 2:
+    	one = 'MAZDA MX-6'
+    elif m[str(ctx.message.author.id)]["car"] == 3:
+    	one = 'ВАЗ (Lada) 2131'
+    elif m[str(ctx.message.author.id)]["car"] == 4:
+    	one = 'Skoda Rapid'
+    if m[str(ctx.message.author.id)]["house"] == 1:
+    	two = 'Домик в деревне'
+    elif m[str(ctx.message.author.id)]["house"] == 2:
+    	two = 'Коттедж'
+    elif m[str(ctx.message.author.id)]["house"] == 3:
+    	two = 'Дом на берегу моря'
+    elif m[str(ctx.message.author.id)]["house"] == 4:
+    	two = 'Кремль'
+    if m[str(ctx.message.author.id)]["phone"] == 1:
+    	three = 'NOKIA 3310'
+    elif m[str(ctx.message.author.id)]["phone"] == 2:
+    	three = 'Samsung Galaxy J5'
+    elif m[str(ctx.message.author.id)]["phone"] == 3:
+    	three = 'MEIZU M6'
+    elif m[str(ctx.message.author.id)]["phone"] == 4:
+    	three = 'IPHONE XS MAX'
+    emb = discord.Embed(title = 'Профиль', color = discord.Color.blue())
+    emb.set_author(name = member.name, icon_url = member.avatar_url)
+    emb.add_field(name = '💰 Баланс:', value = str(m[str(ctx.message.author.id)]["money"]) + '$')
+    emb.add_field(name = '🚘Авто', value = str(one) )
+    emb.add_field(name = '🏠Дом', value = str(two) )
+    emb.add_field(name = '📱Телефон', value = str(three))
+    await ctx.message.channel.send(embed = emb)
+
+@Bot.command( pass_context = True )
+@commands.has_any_role("Техник" )
+async def деньги(ctx, member: discord.Member, mani: int ):
+	m[str(member.id)]["money"] += int(mani)
+	await ctx.message.channel.send('Бабло зачислено')
+
 
 
 #kick
@@ -264,6 +494,6 @@ async def removerole(ctx, member: discord.Member, role: str ):
 	role = discord.utils.get( ctx.message.guild.roles, name = role)
 	await member.remove_roles( role )
 	await ctx.send(f"""  { member.mention } ```diff\n -лишился  { role }!\n``` """)
-
+	
 token = os.environ.get('BOT_TOKEN')
 Bot.run(str(token))
