@@ -192,7 +192,7 @@ async def работать(ctx, ):
 	member = ctx.message.author
 	if m[str(ctx.message.author.id)]["days"] >= 5:
 		await ctx.message.channel.send(f'{member.mention},  рабочая неделя завершена. \n ⏳ Вы сможете работать через час')
-		await asyncio.sleep(25)
+		await asyncio.sleep(3600)
 		await ctx.message.channel.send(f'{member.mention},  Можете снова работать!')
 		m[str(ctx.message.author.id)]["days"] -= 5
 
@@ -200,6 +200,9 @@ async def работать(ctx, ):
 		await ctx.message.channel.send(f'{member.mention}, рабочий день окончен. \n 💵 Вы заработали 500$.')
 		m[str(ctx.message.author.id)]["money"] += 500
 		m[str(ctx.message.author.id)]["days"] += 1
+@Bot.command( pass_context = True )
+async def баланс(ctx, ):
+	await ctx.message.channel.send(f'💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]) + '$')
 #shop
 @Bot.command( pass_context = True )
 async def магазин(ctx, ):
