@@ -135,55 +135,64 @@ async def help ( ctx ):
 async def казино(ctx,  *, stavka: int):
 	member = ctx.message.author
 	global m
-	if int(stavka) < m[str(ctx.message.author.id)]["money"]:
-		kazino = random.randint(1, 2)
+	if int(stavka) <= m[str(ctx.message.author.id)]["money"]:
 		coefficient = random.randint(1, 15)
-		if kazino == 1:
-			if coefficient == 1 or coefficient == 3 or coefficient == 5 or coefficient == 7 or coefficient == 9 or coefficient == 11 or coefficient == 15:
-				await ctx.message.channel.send(f'{member.mention}, Вы выйграли:' + str(stavka*2) + '$' +'!')
-				m[str(ctx.message.author.id)]["money"] += stavka*2
-			elif coefficient == 2 or coefficient == 4 or coefficient == 6 or coefficient == 8 or coefficient == 10 or coefficient == 12 or coefficient == 14:
-				await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*3) + '$' +'!')
-				m[str(ctx.message.author.id)]["money"] += stavka*3
-			elif coefficient == 13:
-				await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*7) + '$' +'!')
-				m[str(ctx.message.author.id)]["money"] += stavka*7
-		elif kazino == 2:
-			await ctx.message.channel.send(f'{ member.mention }, Вы проиграли ' + str(stavka) + '$' + '!')
-			m[str(ctx.message.author.id)]["money"] -= stavka 
+		if coefficient == 1 or coefficient == 7  or coefficient == 15:
+			m[str(ctx.message.author.id)]["money"] += stavka*2
+			await ctx.message.channel.send(f'{member.mention}, Вы выйграли:' + str(stavka*2) + '$' +'!' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+		elif coefficient == 2 or coefficient == 8 or coefficient == 14:
+			m[str(ctx.message.author.id)]["money"] += stavka*3
+			await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*3) + '$' +'!' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+		elif coefficient == 13:
+			m[str(ctx.message.author.id)]["money"] += stavka*7
+			await ctx.message.channel.send(f'{ member.mention }, Вы выйграли:' + str(stavka*7) + '$' +'!' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+		else:
+			m[str(ctx.message.author.id)]["money"] -= stavka
+			await ctx.message.channel.send(f'{ member.mention }, Вы проиграли:' + str(stavka) + '$' +'!' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]) )
+
 
 	else:
-		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.')
+		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
 #game2
 @Bot.command( pass_context = True )
 async def стакан(ctx, stakan: int, summa: int):
 	member = ctx.message.author
 	global m
-	truestakan = random.randint(1, 3)
-	caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
-	if int(truestakan) == int(stakan):
-		await ctx.message.channel.send(f'{member.mention}, Вы угадали. Приз: ' + str(summa*caf) + "$!" )
-		m[str(ctx.message.author.id)]["money"] += summa*caf
+	if int(summa) <= m[str(ctx.message.author.id)]["money"]:
+		truestakan = random.randint(1, 3)
+		caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
+		if int(truestakan) == int(stakan):
+			m[str(ctx.message.author.id)]["money"] += summa*caf
+			await ctx.message.channel.send(f'{member.mention}, Вы угадали. Приз: ' + str(summa*caf) + "$!" + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+		else:
+			m[str(ctx.message.author.id)]["money"] -= summa
+			await ctx.message.channel.send(f'{member.mention}, Вы не угадали. Это был ' + str(truestakan) + "-й стакан." + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
 	else:
-		await ctx.message.channel.send(f'{member.mention}, Вы не угадали. Это был ' + str(truestakan) + "-й стакан." )
-		m[str(ctx.message.author.id)]["money"] -= summa
-
+		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
 #game3
 @Bot.command( pass_context = True )
 async def курс(ctx, updown: str, summa: int):
 	member = ctx.message.author
 	global m
-	updowns = random.choice(['вверх', 'вниз'])
-	caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
-	if str(updowns) == str(updown):
-		await ctx.message.channel.send(f'{member.mention}, Вы угадали. \n✅Заработано: ' + str(summa*caf) + "$!" )
-		m[str(ctx.message.author.id)]["money"] += summa*caf
+	if int(summa) <= m[str(ctx.message.author.id)]["money"]:
+		updowns = random.choice(['вверх', 'вниз'])
+		caf = random.choice([2,2.01,2.02,2.03,2.04,2.05,2.06,2.07,2.08,2.09,2.1])
+		if str(updowns) == str(updown):
+			m[str(ctx.message.author.id)]["money"] += summa*caf
+			await ctx.message.channel.send(f'{member.mention}, Вы угадали. \n✅Заработано: ' + str(summa*caf) + "$!" + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+		else:
+			m[str(ctx.message.author.id)]["money"] -= summa
+			if updowns == 'вниз':
+				await ctx.message.channel.send(f'{member.mention}, Вы не угадали.\n Курс подешевел.' + '\n ❌Потеряно: ' + str(summa) + '$' + '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+			elif updowns == 'вверх':
+				await ctx.message.channel.send(f'{member.mention}, Вы не угадали. \nКурс подорожал' + '\n ❌Потеряно: ' + str(summa) + '$'+ '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))	
 	else:
-		if updowns == 'вниз':
-			await ctx.message.channel.send(f'{member.mention}, Вы не угадали.\n Курс подешевел.' + '\n ❌Потеряно: ' + str(summa) + '$' )
-		elif updowns == 'вверх':
-			await ctx.message.channel.send(f'{member.mention}, Вы не угадали. \nКурс подорожал' + '\n ❌Потеряно: ' + str(summa) + '$')
-		m[str(ctx.message.author.id)]["money"] -= summa
+		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.'+ '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
+
+@Bot.command( pass_context = True )
+@commands.has_any_role("Техник" )
+async def чек(ctx, member: discord.Member,):
+	await ctx.message.channel.send(f'Баланс игрока: ' + str(m[str(member.id)]["money"]))
 
 #work
 @Bot.command( pass_context = True )
@@ -200,16 +209,19 @@ async def работать(ctx, ):
 		await ctx.message.channel.send(f'{member.mention}, рабочий день окончен. \n 💵 Вы заработали 500$.')
 		m[str(ctx.message.author.id)]["money"] += 500
 		m[str(ctx.message.author.id)]["days"] += 1
-@Bot.command( pass_context = True )
-async def баланс(ctx, ):
-	await ctx.message.channel.send(f'💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]) + '$')
 #shop
 @Bot.command( pass_context = True )
 async def магазин(ctx, ):
-	await ctx.message.channel.send(f"🚗Автомобили: \n=============================\n🔸(ID: 1) Renault Logan - 500.000₽ \n 🔸(ID: 2) MAZDA MX-6 - 150.000₽\n 🔸(ID: 3) ВАЗ (Lada) 2131 - 200.000₽\n 🔸(ID: 4) Skoda Rapid - 1.000.000₽\n=============================\n ❓ Для покупки введите «!авто [ID]»")
-	await ctx.message.channel.send("🏠Дома: \n=============================\n🔸(ID: 1) Домик в деревне - 600.000₽\n 🔸(ID: 2) Коттедж - 2.000.000₽\n 🔸(ID: 3) Дом на берегу моря - 10.000.000₽\n 🔸(ID: 4) Кремль - 21.000.000₽\n=============================\n ❓ Для покупки введите «!дом [ID]»")
-	await ctx.message.channel.send("📱Телефоны: \n=============================\n🔸(ID: 1) NOKIA 3310 - 3000₽\n 🔸(ID: 2) Samsung Galaxy J5 - 20.000₽\n 🔸(ID: 3) MEIZU M6 - 30.000₽\n 🔸(ID: 4) IPHONE XS MAX - 100.000₽\n=============================\n ❓ Для покупки введите «!телефон [ID]»")
+	await ctx.message.channel.send(f"🚗Автомобили: \n=============================\n🔸(ID: 1) Renault Logan - 500.000$ \n 🔸(ID: 2) MAZDA MX-6 - 150.000$\n 🔸(ID: 3) ВАЗ (Lada) 2131 - 200.000$\n 🔸(ID: 4) Skoda Rapid - 1.000.000$\n=============================\n ❓ Для покупки введите «!авто [ID]»")
+	await ctx.message.channel.send("🏠Дома: \n=============================\n🔸(ID: 1) Домик в деревне - 600.000$\n 🔸(ID: 2) Коттедж - 2.000.000$\n 🔸(ID: 3) Дом на берегу моря - 10.000.000$\n 🔸(ID: 4) Кремль - 21.000.000$\n=============================\n ❓ Для покупки введите «!дом [ID]»")
+	await ctx.message.channel.send("📱Телефоны: \n=============================\n🔸(ID: 1) NOKIA 3310 - 3000$\n 🔸(ID: 2) Samsung Galaxy J5 - 20.000$\n 🔸(ID: 3) MEIZU M6 - 30.000$\n 🔸(ID: 4) IPHONE XS MAX - 100.000$\n=============================\n ❓ Для покупки введите «!телефон [ID]»")
 
+	
+@Bot.command( pass_context = True )
+async def баланс(ctx, ):
+	member = ctx.message.author
+	await ctx.message.channel.send(f'{member.mention}💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]) + '$')
+	
 @Bot.command( pass_context = True )
 async def авто(ctx, automobile: int):
 	global m
