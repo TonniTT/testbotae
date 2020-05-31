@@ -106,15 +106,7 @@ async def on_member_remove(member):
 		else:
 			if str(rol.id) == '714775091178766336':
 				await member.ban(reason = 'ОБХОД МУТА')
-				
-@Bot.command()
-async def texo (ctx):
-	while True:
-		role = discord.utils.get( ctx.message.guild.roles, name = 'Техник')
-		await role.edit( reason=None,colour = discord.Colour(0xff0000))
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Colour(0x0900ff))
-		await asyncio.sleep(2)
+
 @Bot.command()
 async def rgb (ctx):
 	while True:
