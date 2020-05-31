@@ -114,8 +114,6 @@ async def rgb (ctx):
 		await asyncio.sleep(2)
 		await role.edit( reason=None,colour = discord.Color.orange())
 		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.yellow())
-		await asyncio.sleep(2)
 		await role.edit( reason=None,colour = discord.Color.green())
 		await asyncio.sleep(2)
 		await role.edit( reason=None,colour = discord.Color.blue())
