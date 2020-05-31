@@ -1,19 +1,4 @@
-@Bot.command()
-async def rgb (ctx):
-	while True:
-		role = discord.utils.get( ctx.message.guild.roles, name = 'RGB')
-		await role.edit( reason=None,colour = discord.Color.red())
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.orange())
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.yellow())
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.green())
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.blue())
-		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.purple())
-		await asyncio.sleep(2)#UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
+#UPD 03.05.2020: Добавлена функция выдачи роли, повикшены недочеты, обновлено меню !help. Добавлены emb в команды: !mute, !unmute, !kick. Команда !banan переименована в !ban.
 #UPD 03.05.2020(2): Приветствие пользвоателя при входе не сервере. Комада !giverole and !removerole добавлены(использовать могут только с ролью).
 #UPD 04.05.2020: Обновлено приветствие. Добавлено сообщение при выходе с сервера. Если выйти с серва с ролью mute = бан.
 #UPD 05.05.2020: Обновлено меню !help
@@ -124,17 +109,19 @@ async def on_member_remove(member):
 @Bot.command()
 async def rgb (ctx):
 	while True:
-		role = discord.utils.get( ctx.message.guild.roles, name = 'RGB')
-		await role.edit( reason=None,colour = discord.Color.red())
+		role = discord.utils.get( ctx.message.guild.roles, name = 'ЛГБТ')
+		await role.edit( reason=None,colour = discord.Colour(0xff0000))
 		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.orange())
+		await role.edit( reason=None,colour = discord.Color(0xff8800))
 		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.green())
+		await role.edit( reason=None, colour = discord.Colour(0xffff00))
 		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.blue())
+		await role.edit( reason=None,colour = discord.Color(0x2bff00))
 		await asyncio.sleep(2)
-		await role.edit( reason=None,colour = discord.Color.purple())
-		await asyncio.sleep(2)		
+		await role.edit( reason=None,colour = discord.Color(0x002bff))
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color(0x6a00ff))
+		await asyncio.sleep(2)	
 #Help
 @Bot.command()
 async def help ( ctx ):
