@@ -106,7 +106,22 @@ async def on_member_remove(member):
 		else:
 			if str(rol.id) == '714775091178766336':
 				await member.ban(reason = 'ОБХОД МУТА')
-			
+@Bot.command()
+async def rgb (ctx):
+	while True:
+		role = discord.utils.get( ctx.message.guild.roles, name = 'RGB')
+		await role.edit( reason=None,colour = discord.Color.red())
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color.orange())
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color.yellow())
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color.green())
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color.blue())
+		await asyncio.sleep(2)
+		await role.edit( reason=None,colour = discord.Color.purple())
+		await asyncio.sleep(2)			
 #Help
 @Bot.command()
 async def help ( ctx ):
