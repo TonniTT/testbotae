@@ -110,7 +110,7 @@ async def on_member_remove(member):
 async def rgb (ctx):
 	while True:
 		role = discord.utils.get( ctx.message.guild.roles, name = 'RGB')
-		await role.edit( reason=None,colour = discord.Color(255, 0, 0, 1))
+		await role.edit( reason=None,colour = discord.Color.rgb(255, 0, 0))
 		await asyncio.sleep(2)
 		await role.edit( reason=None,colour = discord.Color.orange())
 		await asyncio.sleep(2)
