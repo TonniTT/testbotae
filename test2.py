@@ -106,7 +106,13 @@ async def on_member_remove(member):
 		else:
 			if str(rol.id) == '714775091178766336':
 				await member.ban(reason = 'ОБХОД МУТА')
-
+				
+@Bot.command(pass_context=True)
+async def setnick(ctx, member: discord.Member, nick1=None, nick2=" " ):
+    nick = nick1+' '+nick2
+    await member.edit(nick=nick)
+    await ctx.send(f'{ctx.message.author} changed nickname for {member.mention}')
+#Doesn't work
 @Bot.command()
 async def rgb (ctx):
 	while True:
