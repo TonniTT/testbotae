@@ -212,7 +212,7 @@ async def курс(ctx, updown: str, summa: int):
 		await ctx.message.channel.send(f'{member.mention}, недостаточно денег.'+ '\n💰 Баланс:' + str(m[str(ctx.message.author.id)]["money"]))
 
 @Bot.command( pass_context = True )
-@commands.has_any_role("Техник" )
+@commands.has_any_role("Owner" )
 async def чек(ctx, member: discord.Member,):
 	await ctx.message.channel.send(f'Баланс игрока: ' + str(m[str(member.id)]["money"]))
 
